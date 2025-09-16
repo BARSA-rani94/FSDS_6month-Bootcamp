@@ -1,0 +1,263 @@
+mysql> --JOINS
+    -> ^C
+mysql> USE NIT;
+Database changed
+mysql> # INNER JOINS
+mysql> select Id,name,amount,date
+    -> from customers
+    -> inner join Orders
+    -> on customers.id=Orders.customer_id;
++----+----------+--------+---------------------+
+| Id | name     | amount | date                |
++----+----------+--------+---------------------+
+|  3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|  2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|  3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|  4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
++----+----------+--------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> # LEFT JOINS
+mysql> select id,name,amount,date
+    -> from customers
+    -> left join Orders
+    -> on customers.id=Orders.customer_id;
++----+----------+--------+---------------------+
+| id | name     | amount | date                |
++----+----------+--------+---------------------+
+|  1 | Ramesh   |   NULL | NULL                |
+|  2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|  3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|  3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|  4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
+|  5 | Hardhik  |   NULL | NULL                |
+|  6 | Komal    |   NULL | NULL                |
+|  7 | Muffy    |   NULL | NULL                |
++----+----------+--------+---------------------+
+8 rows in set (0.00 sec)
+
+mysql> # RIGHT JOINS
+mysql> select id,name,amount,date
+    -> from customers
+    -> right join Orders
+    -> on customers.id=Orders.customer_id;
++------+----------+--------+---------------------+
+| id   | name     | amount | date                |
++------+----------+--------+---------------------+
+|    3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|    2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|    3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|    4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
++------+----------+--------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> # FULL JOIN(as in mysql cli full join is not supported so here we use first left join and then in middle union all operator and then right join)
+mysql> SELECT c.id, c.name, o.amount, o.date
+    -> FROM customers c
+    -> LEFT JOIN Orders o ON c.id = o.customer_id
+    -> UNION all
+    -> SELECT c.id, c.name, o.amount, o.date
+    -> FROM customers c
+    -> RIGHT JOIN Orders o ON c.id = o.customer_id;
++------+----------+--------+---------------------+
+| id   | name     | amount | date                |
++------+----------+--------+---------------------+
+|    1 | Ramesh   |   NULL | NULL                |
+|    2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|    3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|    3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|    4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
+|    5 | Hardhik  |   NULL | NULL                |
+|    6 | Komal    |   NULL | NULL                |
+|    7 | Muffy    |   NULL | NULL                |
+|    3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|    2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|    3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|    4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
++------+----------+--------+---------------------+
+12 rows in set (0.00 sec)
+
+mysql> # SELF JOINS
+mysql> # SELF JOIN: is used to join a table to itself as if the table were two tables, temporarily renaming at least one
+mysql> table in the SQL statement.
+    -> ^C
+mysql> #Here, WHERE clause could be any given expression based on your requirement.
+mysql>  SELECT  a.ID, b.NAME, a.SALARY
+    ->      FROM CUSTOMERS a, CUSTOMERS b
+    ->      WHERE a.SALARY < b.SALARY;
++----+----------+---------+
+| ID | NAME     | SALARY  |
++----+----------+---------+
+|  2 | Ramesh   | 1500.00 |
+|  2 | Kaushik  | 1500.00 |
+|  6 | Chaitali | 4500.00 |
+|  3 | Chaitali | 2000.00 |
+|  2 | Chaitali | 1500.00 |
+|  1 | Chaitali | 2000.00 |
+|  6 | Hardhik  | 4500.00 |
+|  4 | Hardhik  | 6500.00 |
+|  3 | Hardhik  | 2000.00 |
+|  2 | Hardhik  | 1500.00 |
+|  1 | Hardhik  | 2000.00 |
+|  3 | Komal    | 2000.00 |
+|  2 | Komal    | 1500.00 |
+|  1 | Komal    | 2000.00 |
+|  6 | Muffy    | 4500.00 |
+|  5 | Muffy    | 8500.00 |
+|  4 | Muffy    | 6500.00 |
+|  3 | Muffy    | 2000.00 |
+|  2 | Muffy    | 1500.00 |
+|  1 | Muffy    | 2000.00 |
++----+----------+---------+
+20 rows in set (0.00 sec)
+
+mysql> # CARTESIAN JOINS/CROSS PRODUCT:
+mysql> #The CARTESIAN JOIN or CROSS JOIN returns the cartesian product of the sets of records from the two or more
+mysql> joined tables. Thus, it equates to an inner join where the join-condition always evaluates to True or where the join
+    -> condition is absent from the statement.
+    -> ^C
+mysql> SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS, ORDERS;
++----+----------+--------+---------------------+
+| ID | NAME     | AMOUNT | DATE                |
++----+----------+--------+---------------------+
+|  1 | Ramesh   |   2060 | 2008-05-20 00:00:00 |
+|  1 | Ramesh   |   3000 | 2009-10-08 00:00:00 |
+|  1 | Ramesh   |   1560 | 2009-11-20 00:00:00 |
+|  1 | Ramesh   |   1500 | 2009-10-08 00:00:00 |
+|  2 | Khilan   |   2060 | 2008-05-20 00:00:00 |
+|  2 | Khilan   |   3000 | 2009-10-08 00:00:00 |
+|  2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|  2 | Khilan   |   1500 | 2009-10-08 00:00:00 |
+|  3 | Kaushik  |   2060 | 2008-05-20 00:00:00 |
+|  3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|  3 | Kaushik  |   1560 | 2009-11-20 00:00:00 |
+|  3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|  4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
+|  4 | Chaitali |   3000 | 2009-10-08 00:00:00 |
+|  4 | Chaitali |   1560 | 2009-11-20 00:00:00 |
+|  4 | Chaitali |   1500 | 2009-10-08 00:00:00 |
+|  5 | Hardhik  |   2060 | 2008-05-20 00:00:00 |
+|  5 | Hardhik  |   3000 | 2009-10-08 00:00:00 |
+|  5 | Hardhik  |   1560 | 2009-11-20 00:00:00 |
+|  5 | Hardhik  |   1500 | 2009-10-08 00:00:00 |
+|  6 | Komal    |   2060 | 2008-05-20 00:00:00 |
+|  6 | Komal    |   3000 | 2009-10-08 00:00:00 |
+|  6 | Komal    |   1560 | 2009-11-20 00:00:00 |
+|  6 | Komal    |   1500 | 2009-10-08 00:00:00 |
+|  7 | Muffy    |   2060 | 2008-05-20 00:00:00 |
+|  7 | Muffy    |   3000 | 2009-10-08 00:00:00 |
+|  7 | Muffy    |   1560 | 2009-11-20 00:00:00 |
+|  7 | Muffy    |   1500 | 2009-10-08 00:00:00 |
++----+----------+--------+---------------------+
+28 rows in set (0.00 sec)
+
+mysql> # UNION CLAUSES:
+mysql> SQL UNION clause/operator is used to combine the results of two or more SELECT statements
+    -> without returning any duplicate rows. ^C
+mysql> # To use UNION, each SELECT must have the same number of columns selected, the same number of column
+mysql> expressions, the same data type, and have them in the same order, but they do not have to be the same length.
+    -> ^C
+mysql>  SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      LEFT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID
+    -> UNION
+    ->      SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      RIGHT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID;
++------+----------+--------+---------------------+
+| ID   | NAME     | AMOUNT | DATE                |
++------+----------+--------+---------------------+
+|    1 | Ramesh   |   NULL | NULL                |
+|    2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|    3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|    3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|    4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
+|    5 | Hardhik  |   NULL | NULL                |
+|    6 | Komal    |   NULL | NULL                |
+|    7 | Muffy    |   NULL | NULL                |
++------+----------+--------+---------------------+
+8 rows in set (0.00 sec)
+
+mysql> # UNION ALL CLAUSE:
+mysql> --The UNION ALL operator is used to combine the results of two SELECT statements including duplicate rows.
+    -> The same rules that apply to UNION apply to the UNION ALL operator.
+    -> ^C
+mysql>  SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      LEFT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID
+    -> UNION ALL
+    ->      SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      RIGHT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID;
++------+----------+--------+---------------------+
+| ID   | NAME     | AMOUNT | DATE                |
++------+----------+--------+---------------------+
+|    1 | Ramesh   |   NULL | NULL                |
+|    2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|    3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|    3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|    4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
+|    5 | Hardhik  |   NULL | NULL                |
+|    6 | Komal    |   NULL | NULL                |
+|    7 | Muffy    |   NULL | NULL                |
+|    3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|    2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|    3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|    4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
++------+----------+--------+---------------------+
+12 rows in set (0.00 sec)
+
+mysql> # INTERSECT CLAUSE:
+mysql> -- INTERSECT
+mysql> returns only common rows returned by the two SELECT statements.
+    -> ^C
+mysql> SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      LEFT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID
+    -> INTERSECT
+    ->      SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      RIGHT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID;
++----+----------+--------+---------------------+
+| ID | NAME     | AMOUNT | DATE                |
++----+----------+--------+---------------------+
+|  2 | Khilan   |   1560 | 2009-11-20 00:00:00 |
+|  3 | Kaushik  |   3000 | 2009-10-08 00:00:00 |
+|  3 | Kaushik  |   1500 | 2009-10-08 00:00:00 |
+|  4 | Chaitali |   2060 | 2008-05-20 00:00:00 |
++----+----------+--------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> # EXCEPT CLAUSE:
+mysql> --The SQL EXCEPT clause/operator is used to combine two SELECT statements and returns rows from the first
+    -> SELECT statement that are not returned by the second SELECT statement. This means EXCEPT returns only
+    -> rows, which are not available in second SELECT statement.
+    -> ^C
+mysql> SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      LEFT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID
+    -> EXCEPT
+    ->      SELECT  ID, NAME, AMOUNT, DATE
+    ->      FROM CUSTOMERS
+    ->      RIGHT JOIN ORDERS
+    ->      ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID;
++----+---------+--------+------+
+| ID | NAME    | AMOUNT | DATE |
++----+---------+--------+------+
+|  1 | Ramesh  |   NULL | NULL |
+|  5 | Hardhik |   NULL | NULL |
+|  6 | Komal   |   NULL | NULL |
+|  7 | Muffy   |   NULL | NULL |
++----+---------+--------+------+
+4 rows in set (0.00 sec)
+
+mysql>
+
